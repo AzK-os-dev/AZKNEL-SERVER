@@ -1,6 +1,5 @@
-
+<img src="Server-removebg-preview.png" alt="logo" width="120" align="center"/>
 <h1 align="center">
-  <img src="Server.png" alt="logo" width="120" />
   <strong> Multi-Session Reverse Shell AZKNEL-SERVER</strong>
 </h1>
 
