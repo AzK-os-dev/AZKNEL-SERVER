@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./Server-removebg-preview.png" alt="AZKNEL-SERVER logo" width="280" style="max-width:100%;height:auto;" />
+  <img src="./Server-removebg-preview.png" alt="AZKNEL-SERVER logo" width="250" style="max-width:100%;height:auto;" />
 </p>
 
 <h1 align="center">
@@ -8,6 +8,7 @@
 <p align="center">
 A cross-platform Python-based reverse shell system that enables centralized management of multiple remote systems through an interactive console interface.
 </p>
+
 ## Description
 
 Multi-Session Reverse Shell Handler is a remote administration tool that allows system administrators and security professionals to manage multiple remote connections simultaneously from a single centralized interface. The system consists of a cross-platform client that connects back to a multi-threaded handler capable of managing up to 5 concurrent sessions.
