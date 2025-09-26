@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">
-  <strong>Multi-Session Reverse Shell AZKNEL-SERVER</strong>
+  <strong>Multi-Session Reverse Shell | AZKNEL-SERVER | BETA</strong>
 </h1>
 <p align="center">
 A cross-platform Python-based reverse shell system that enables centralized management of multiple remote systems through an interactive console interface.
