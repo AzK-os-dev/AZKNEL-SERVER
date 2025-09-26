@@ -1,4 +1,4 @@
-# Multi-Session Reverse Shell Handler
+# <center> Multi-Session Reverse Shell AZKNEL-SERVER </center>
 
 A cross-platform Python-based reverse shell system that enables centralized management of multiple remote systems through an interactive console interface.
 
@@ -22,7 +22,7 @@ Multi-Session Reverse Shell Handler is a remote administration tool that allows 
 
 Clone the repository:
 ```bash
-git clone https://github.com/username/multi-session-handler.git
+git clone https://github.com/AzK-os-dev/AZKNEL-SERVER.git
 cd multi-session-handler
 ```
 
@@ -41,7 +41,7 @@ python3 handler.py --port 4444
 
 2. **Connect clients** from remote systems:
 ```bash
-python3 client.py --host <HANDLER_IP> --port 4444
+python3 main.py --host <HANDLER_IP> --port 4444
 ```
 
 3. **Manage sessions** through the interactive console:
@@ -67,7 +67,7 @@ MultiHandler> ls -la            # Execute commands on active session
 ### Client Options
 
 ```bash
-python3 client.py --host <HOST> --port <PORT> [OPTIONS]
+python3 main.py --host <HOST> --port <PORT> [OPTIONS]
 
 Options:
   -H, --host          Handler IP address (required)
@@ -199,7 +199,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Changelog
 
-### v1.0.0
+### v1.0.2
 * Initial release
 * Multi-session management
 * Cross-platform client support
